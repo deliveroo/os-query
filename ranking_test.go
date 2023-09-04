@@ -7,13 +7,15 @@ func TestRankFeature(t *testing.T) {
 		{
 			"a simple ranking",
 			RankFeature(
-				"ranked_filed", Log(2),
-			),
+				"ranked_field", Log(2),
+			).Boost(10),
 			map[string]any{
-				"boost": 1,
-				"field": "ranked_filed",
-				"log": map[string]any{
-					"scaling_factor": 2,
+				"rank_feature": map[string]any{
+					"boost": 10,
+					"field": "ranked_field",
+					"log": map[string]any{
+						"scaling_factor": 2,
+					},
 				},
 			},
 		},
