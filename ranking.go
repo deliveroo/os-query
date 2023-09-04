@@ -14,13 +14,16 @@ type RankFeatureQuery struct {
 }
 
 func (r *RankFeatureQuery) Map() map[string]any {
-	m := map[string]any{
+	rankFeature := map[string]any{
 		"field": r.field,
 		"log":   r.rankFeatureType.Map(),
 		"boost": 1,
 	}
+	m := map[string]any{
+		"rank_feature": rankFeature,
+	}
 	if r.boost != nil {
-		m["boost"] = *r.boost
+		rankFeature["boost"] = *r.boost
 	}
 	return m
 }
