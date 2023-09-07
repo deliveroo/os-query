@@ -18,7 +18,7 @@
 // require you to change your existing code in order to integrate the library.
 // Queries can be directly built with `esquery`, and executed by passing an
 // `*elasticsearch.Client` instance (with optional search parameters). Results
-// are returned as-is from the official client (e.g. `*esapi.Response` objects).
+// are returned as-is from the official client (e.g. `*opensearch.Response` objects).
 //
 // Getting started is extremely simple:
 //
@@ -29,7 +29,7 @@
 //	    "log"
 //
 //	    "github.com/aquasecurity/esquery"
-//	    "github.com/elastic/go-elasticsearch/v7"
+//	    "github.com/opensearch-project/opensearch-go/v2"
 //	)
 //
 //	func main() {
