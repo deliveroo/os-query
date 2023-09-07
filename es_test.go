@@ -1,4 +1,4 @@
-package esquery
+package os_query
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package esquery
+package os_query
 
 import (
 	"bytes"
@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/elastic/go-elasticsearch/v7"
-	"github.com/elastic/go-elasticsearch/v7/esapi"
+	"github.com/opensearch-project/opensearch-go/v2"
+	"github.com/opensearch-project/opensearch-go/v2/opensearchapi"
 )
 
 // SearchRequest represents a request to ElasticSearch's Search API, described
@@ -26,7 +26,6 @@ type SearchRequest struct {
 	sort        Sort
 	source      Source
 	timeout     *time.Duration
-
 }
 
 // Search creates a new SearchRequest object, to be filled via method chaining.
@@ -113,8 +112,6 @@ func (req *SearchRequest) Highlight(highlight Mappable) *SearchRequest {
 	return req
 }
 
-
-
 // Map implements the Mappable interface. It converts the request to into a
 // nested map[string]interface{}, as expected by the go-elasticsearch library.
 func (req *SearchRequest) Map() map[string]interface{} {
@@ -155,7 +152,6 @@ func (req *SearchRequest) Map() map[string]interface{} {
 		m["search_after"] = req.searchAfter
 	}
 
-
 	source := req.source.Map()
 	if len(source) > 0 {
 		m["_source"] = source
@@ -174,9 +170,9 @@ func (req *SearchRequest) MarshalJSON() ([]byte, error) {
 // more search options can be provided as well. It returns the standard Response
 // type of the official Go client.
 func (req *SearchRequest) Run(
-	api *elasticsearch.Client,
-	o ...func(*esapi.SearchRequest),
-) (res *esapi.Response, err error) {
+	api *opensearch.Client,
+	o ...func(*opensearchapi.SearchRequest),
+) (res *opensearchapi.Response, err error) {
 	return req.RunSearch(api.Search, o...)
 }
 
@@ -187,16 +183,16 @@ func (req *SearchRequest) Run(
 // a workaround. The Search function in the ES client is actually a field of a
 // function type.
 func (req *SearchRequest) RunSearch(
-	search esapi.Search,
-	o ...func(*esapi.SearchRequest),
-) (res *esapi.Response, err error) {
+	search opensearchapi.Search,
+	o ...func(*opensearchapi.SearchRequest),
+) (res *opensearchapi.Response, err error) {
 	var b bytes.Buffer
 	err = json.NewEncoder(&b).Encode(req.Map())
 	if err != nil {
 		return nil, err
 	}
 
-	opts := append([]func(*esapi.SearchRequest){search.WithBody(&b)}, o...)
+	opts := append([]func(*opensearchapi.SearchRequest){search.WithBody(&b)}, o...)
 
 	return search(opts...)
 }

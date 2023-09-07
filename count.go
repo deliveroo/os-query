@@ -1,11 +1,11 @@
-package esquery
+package os_query
 
 import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/elastic/go-elasticsearch/v7"
-	"github.com/elastic/go-elasticsearch/v7/esapi"
+	"github.com/opensearch-project/opensearch-go/v2"
+	"github.com/opensearch-project/opensearch-go/v2/opensearchapi"
 )
 
 // CountRequest represents a request to get the number of matches for a search
@@ -34,9 +34,9 @@ func (req *CountRequest) Map() map[string]interface{} {
 // more search options can be provided as well. It returns the standard Response
 // type of the official Go client.
 func (req *CountRequest) Run(
-	api *elasticsearch.Client,
-	o ...func(*esapi.CountRequest),
-) (res *esapi.Response, err error) {
+	api *opensearch.Client,
+	o ...func(request *opensearchapi.CountRequest),
+) (res *opensearchapi.Response, err error) {
 	return req.RunCount(api.Count, o...)
 }
 
@@ -47,16 +47,16 @@ func (req *CountRequest) Run(
 // a workaround. The Count function in the ES client is actually a field of a
 // function type.
 func (req *CountRequest) RunCount(
-	count esapi.Count,
-	o ...func(*esapi.CountRequest),
-) (res *esapi.Response, err error) {
+	count opensearchapi.Count,
+	o ...func(*opensearchapi.CountRequest),
+) (res *opensearchapi.Response, err error) {
 	var b bytes.Buffer
 	err = json.NewEncoder(&b).Encode(req.Map())
 	if err != nil {
 		return nil, err
 	}
 
-	opts := append([]func(*esapi.CountRequest){count.WithBody(&b)}, o...)
+	opts := append([]func(*opensearchapi.CountRequest){count.WithBody(&b)}, o...)
 
 	return count(opts...)
 }
