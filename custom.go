@@ -1,4 +1,4 @@
-package esquery
+package os_query
 
 import (
 	"github.com/elastic/go-elasticsearch/v7"

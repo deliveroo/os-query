@@ -1,4 +1,4 @@
-package esquery
+package os_query
 
 func RankFeature(field string, rankFeatureType RankFeatureTypeInterface) *RankFeatureQuery {
 	return &RankFeatureQuery{

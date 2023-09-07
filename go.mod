@@ -1,4 +1,4 @@
-module github.com/aquasecurity/esquery
+module github.com/deliveroo/os_query
 
 go 1.21
 

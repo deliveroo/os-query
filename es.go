@@ -11,11 +11,7 @@
 // Using `esquery` can make your code much easier to write, read and maintain,
 // and significantly reduce the amount of code you write.
 //
-//
-//
-// Usage
-//
-//
+// # Usage
 //
 // esquery provides a method chaining-style API for building and executing
 // queries and aggregations. It does not wrap the official Go client nor does it
@@ -26,78 +22,75 @@
 //
 // Getting started is extremely simple:
 //
-//     package main
+//	package main
 //
-//     import (
-//         "context"
-//         "log"
+//	import (
+//	    "context"
+//	    "log"
 //
-//         "github.com/aquasecurity/esquery"
-//         "github.com/elastic/go-elasticsearch/v7"
-//     )
+//	    "github.com/aquasecurity/esquery"
+//	    "github.com/elastic/go-elasticsearch/v7"
+//	)
 //
-//     func main() {
-//         // connect to an ElasticSearch instance
-//         es, err := elasticsearch.NewDefaultClient()
-//         if err != nil {
-//             log.Fatalf("Failed creating client: %s", err)
-//         }
+//	func main() {
+//	    // connect to an ElasticSearch instance
+//	    es, err := elasticsearch.NewDefaultClient()
+//	    if err != nil {
+//	        log.Fatalf("Failed creating client: %s", err)
+//	    }
 //
-//         // run a boolean search query
-//         qRes, err := esquery.Query(
-//             esquery.
-//                 Bool().
-//                 Must(esquery.Term("title", "Go and Stuff")).
-//                 Filter(esquery.Term("tag", "tech")),
-//             ).Run(
-//                 es,
-//                 es.Search.WithContext(context.TODO()),
-//                 es.Search.WithIndex("test"),
-//             )
-//         if err != nil {
-//             log.Fatalf("Failed searching for stuff: %s", err)
-//         }
+//	    // run a boolean search query
+//	    qRes, err := esquery.Query(
+//	        esquery.
+//	            Bool().
+//	            Must(esquery.Term("title", "Go and Stuff")).
+//	            Filter(esquery.Term("tag", "tech")),
+//	        ).Run(
+//	            es,
+//	            es.Search.WithContext(context.TODO()),
+//	            es.Search.WithIndex("test"),
+//	        )
+//	    if err != nil {
+//	        log.Fatalf("Failed searching for stuff: %s", err)
+//	    }
 //
-//         defer qRes.Body.Close()
+//	    defer qRes.Body.Close()
 //
-//         // run an aggregation
-//         aRes, err := esquery.Aggregate(
-//             esquery.Avg("average_score", "score"),
-//             esquery.Max("max_score", "score"),
-//         ).Run(
-//             es,
-//             es.Search.WithContext(context.TODO()),
-//             es.Search.WithIndex("test"),
-//         )
-//         if err != nil {
-//             log.Fatalf("Failed searching for stuff: %s", err)
-//         }
+//	    // run an aggregation
+//	    aRes, err := esquery.Aggregate(
+//	        esquery.Avg("average_score", "score"),
+//	        esquery.Max("max_score", "score"),
+//	    ).Run(
+//	        es,
+//	        es.Search.WithContext(context.TODO()),
+//	        es.Search.WithIndex("test"),
+//	    )
+//	    if err != nil {
+//	        log.Fatalf("Failed searching for stuff: %s", err)
+//	    }
 //
-//         defer aRes.Body.Close()
+//	    defer aRes.Body.Close()
 //
-//         // ...
-//     }
+//	    // ...
+//	}
 //
+// # Notes
 //
+//   - esquery currently supports version 7 of the ElasticSearch Go client.
 //
-// Notes
-//
-//
-//
-//* esquery currently supports version 7 of the ElasticSearch Go client.
-//* The library cannot currently generate "short queries". For example,
-//  whereas ElasticSearch can accept this:
+//   - The library cannot currently generate "short queries". For example,
+//     whereas ElasticSearch can accept this:
 //
 //     { "query": { "term": { "user": "Kimchy" } } }
 //
 // The library will always generate this:
 //
-//     { "query": { "term": { "user": { "value": "Kimchy" } } } }
+//	{ "query": { "term": { "user": { "value": "Kimchy" } } } }
 //
 // This is also true for queries such as "bool", where fields like "must" can
 // either receive one query object, or an array of query objects. `esquery` will
 // generate an array even if there's only one query object.
-package esquery
+package os_query
 
 // Mappable is the interface implemented by the various query and aggregation
 // types provided by the package. It allows the library to easily transform the

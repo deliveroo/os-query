@@ -1,10 +1,11 @@
-package esquery
+package os_query
 
 //----------------------------------------------------------------------------//
 
 // TermsAggregation represents an aggregation of type "terms", as described in
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/
-//      search-aggregations-bucket-terms-aggregation.html
+//
+//	search-aggregations-bucket-terms-aggregation.html
 type TermsAggregation struct {
 	name        string
 	field       string
