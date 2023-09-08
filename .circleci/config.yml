@@ -1,0 +1,79 @@
+version: 2.1
+
+commands:
+  configure_github_access:
+    steps:
+      - run:
+          name: Configure github access
+          command: git config --global url."https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+  restore_build_cache:
+    steps:
+      - restore_cache:
+          keys:
+            - v1.21-go-build-cache-{{ .Environment.CIRCLE_JOB }}-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1.21-go-build-cache-{{ .Environment.CIRCLE_JOB }}-{{ .Environment.CIRCLE_BRANCH }}
+            - v1.21-go-build-cache-{{ .Environment.CIRCLE_JOB }}-main
+            - v1.21-go-build-cache-{{ .Environment.CIRCLE_JOB }}-
+
+  save_build_cache:
+    steps:
+      - save_cache:
+          key: v1.21-go-build-cache-{{ .Environment.CIRCLE_JOB }}-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - /mnt/ramdisk/.cache/go-build
+          when: always
+
+global_context: &global_context
+  context:
+    - org-global
+    - org-datadog-credentials
+    - GITHUB_CREDS
+
+global_dockerhub_auth: &global_dockerhub_auth
+  auth:
+    username: $GLOBAL_DOCKERHUB_USERNAME
+    password: $GLOBAL_DOCKERHUB_PASSWORD
+
+executors:
+  test-container:
+    docker:
+      - image: cimg/go:1.21
+        <<: *global_dockerhub_auth
+    environment:
+      GOCACHE: /mnt/ramdisk/.cache/go-build
+      TEST_RESULTS: /tmp/test-results
+
+test_steps: &test_steps
+  steps:
+    - checkout
+    - restore_build_cache
+    - configure_github_access
+    - run:
+        name: Run tests
+        command: make test-ci
+    - store_artifacts:
+        path: /tmp/test-results
+        destination: raw-test-output
+    - store_artifacts:
+        path: /tmp/artifacts
+    - store_test_results:
+        path: /tmp/test-results
+    - persist_to_workspace:
+        root: /tmp/artifacts
+        paths:
+          - test_coverage_stats
+    - save_build_cache
+
+jobs:
+  test:
+    executor: test-container
+    resource_class: small
+    <<: *test_steps
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - test:
+          <<: *global_context
