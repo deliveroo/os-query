@@ -465,6 +465,48 @@ func (q TermsQuery) Map() map[string]interface{} {
 
 //----------------------------------------------------------------------------//
 
+// TermsQuery represents a query of type "terms" with string values, as described in:
+// https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html
+type StringTermsQuery struct {
+	field  string
+	values []string
+	boost  float32
+}
+
+// Terms creates a new query of type "terms" on the provided field, and
+// optionally with the provided term values.
+func StringTerms(field string, values ...string) *StringTermsQuery {
+	return &StringTermsQuery{
+		field:  field,
+		values: values,
+	}
+}
+
+// Values sets the term values for the query.
+func (q *StringTermsQuery) Values(values ...string) *StringTermsQuery {
+	q.values = values
+	return q
+}
+
+// Boost sets the boost value of the query.
+func (q *StringTermsQuery) Boost(b float32) *StringTermsQuery {
+	q.boost = b
+	return q
+}
+
+// Map returns a map representation of the query, thus implementing the
+// Mappable interface.
+func (q *StringTermsQuery) Map() map[string]interface{} {
+	innerMap := map[string]any{q.field: q.values}
+	if q.boost > 0 {
+		innerMap["boost"] = q.boost
+	}
+
+	return map[string]interface{}{"terms": innerMap}
+}
+
+//----------------------------------------------------------------------------//
+
 // TermsSetQuery represents a query of type "terms_set", as described in:
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-set-query.html
 type TermsSetQuery struct {

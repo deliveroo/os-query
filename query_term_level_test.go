@@ -136,6 +136,16 @@ func TestTermLevel(t *testing.T) {
 			},
 		},
 		{
+			"string_terms",
+			StringTerms("user").Values([]string{"1", "2"}...).Boost(1.3),
+			map[string]interface{}{
+				"terms": map[string]interface{}{
+					"user":  []string{"1", "2"},
+					"boost": 1.3,
+				},
+			},
+		},
+		{
 			"terms_set",
 			TermsSet("programming_languages", "go", "rust", "COBOL").MinimumShouldMatchField("required_matches"),
 			map[string]interface{}{
