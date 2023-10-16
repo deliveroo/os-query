@@ -1,9 +1,9 @@
-# esquery
+# opensearch query builder
 
-[![](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue&style=flat-square)](https://godoc.org/github.com/aquasecurity/esquery) [![](https://img.shields.io/github/license/aquasecurity/esquery?style=flat-square)](LICENSE) [![Build Status](https://travis-ci.org/aquasecurity/esquery.svg?branch=master)](https://travis-ci.org/aquasecurity/esquery)
+[![](https://img.shields.io/github/license/aquasecurity/esquery?style=flat-square)](LICENSE) [![Build Status](https://circleci.com/gh/deliveroo/os_query.svg?branch=main)](https://app.circleci.com/pipelines/github/deliveroo/os_query?branch=main)
 
 
-**A non-obtrusive, idiomatic and easy-to-use query and aggregation builder for the [official Go client](https://github.com/elastic/go-elasticsearch) for [ElasticSearch](https://www.elastic.co/products/elasticsearch).**
+**A non-obtrusive, idiomatic and easy-to-use query and aggregation builder for the [official Opensearch client](https://opensearch.org/docs/latest/clients/go/) for [Opensearch](https://opensearch.org/).**
 
 ## Table of Contents
 
@@ -34,13 +34,9 @@ This is an early release, API may still change.
 
 `esquery` is a Go module. To install, simply run this in your project's root directory:
 
-```bash
-go get github.com/aquasecurity/esquery
-```
-
 ## Usage
 
-esquery provides a [method chaining](https://en.wikipedia.org/wiki/Method_chaining)-style API for building and executing queries and aggregations. It does not wrap the official Go client nor does it require you to change your existing code in order to integrate the library. Queries can be directly built with `esquery`, and executed by passing an `*elasticsearch.Client` instance (with optional search parameters). Results are returned as-is from the official client (e.g. `*esapi.Response` objects).
+it provides a [method chaining](https://en.wikipedia.org/wiki/Method_chaining)-style API for building and executing queries and aggregations. It does not wrap the official Go client nor does it require you to change your existing code in order to integrate the library. Queries can be directly built, and executed by passing an `*opensearch.Client` instance (with optional search parameters). Results are returned as-is from the official client (e.g. `*opensearchapi.Response` objects).
 
 Getting started is extremely simple:
 
@@ -48,51 +44,49 @@ Getting started is extremely simple:
 package main
 
 import (
-	"context"
 	"log"
 
-	"github.com/aquasecurity/esquery"
-	"github.com/elastic/go-elasticsearch/v7"
+	"github.com/opensearch-project/opensearch-go/v2"
+
+	oq "github.com/deliveroo/os_query"
 )
 
 func main() {
-    // connect to an ElasticSearch instance
-    es, err := elasticsearch.NewDefaultClient()
-    if err != nil {
-        log.Fatalf("Failed creating client: %s", err)
-    }
+	// connect to an Opensearch instance
+	client, err := opensearch.NewDefaultClient()
+	if err != nil {
+		log.Fatalf("Failed creating client: %s", err)
+	}
 
-    // run a boolean search query
-    res, err := esquery.Search().
-        Query(
-            esquery.
-                Bool().
-                Must(esquery.Term("title", "Go and Stuff")).
-                Filter(esquery.Term("tag", "tech")),
-        ).
-        Aggs(
-            esquery.Avg("average_score", "score"),
-            esquery.Max("max_score", "score"),
-        ).
-        Size(20).
-        Run(
-            es,
-            es.Search.WithContext(context.TODO()),
-            es.Search.WithIndex("test"),
-        )
-        if err != nil {
-            log.Fatalf("Failed searching for stuff: %s", err)
-        }
+	query := oq.Query(
+		oq.
+			Bool().
+			Must(oq.Term("title", "Go and Stuff")).
+			Filter(oq.Term("tag", "tech")),
+	).
+		Aggs(
+			oq.Avg("average_score", "score"),
+			oq.Max("max_score", "score"),
+		).
+		Size(20)
 
-    defer res.Body.Close()
+	queryString, err := query.MarshalJSON()
+	if err != nil {
+		log.Fatal("Failed creating query")
+	}
+	// run a boolean search query
+	search := client.Search
+	res, err := search(search.WithQuery(string(queryString)))
+	if err != nil {
+		log.Fatal("Failed executing query")
+	}
 
-    // ...
+	defer res.Body.Close()
 }
 ```
 
 ## Notes
 
-* `esquery` currently supports version 7 of the ElasticSearch Go client.
 * The library cannot currently generate "short queries". For example, whereas
   ElasticSearch can accept this:
 
