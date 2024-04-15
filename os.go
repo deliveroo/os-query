@@ -1,4 +1,4 @@
-package os_query
+package query
 
 // Mappable is the interface implemented by the various query and aggregation
 // types provided by the package. It allows the library to easily transform the

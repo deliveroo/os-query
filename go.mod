@@ -1,6 +1,8 @@
-module github.com/deliveroo/os_query
+module github.com/deliveroo/os-query
 
-go 1.21
+go 1.22
+
+toolchain go1.22.2
 
 require (
 	github.com/fatih/structs v1.1.0
