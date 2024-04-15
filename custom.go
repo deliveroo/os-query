@@ -1,4 +1,4 @@
-package os_query
+package query
 
 import (
 	"github.com/opensearch-project/opensearch-go/v2"

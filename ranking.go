@@ -1,4 +1,4 @@
-package os_query
+package query
 
 func RankFeature(field string, rankFeatureType RankFeatureTypeInterface) *RankFeatureQuery {
 	return &RankFeatureQuery{

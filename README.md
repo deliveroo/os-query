@@ -1,6 +1,6 @@
 # opensearch query builder
 
-[![](https://img.shields.io/github/license/aquasecurity/esquery?style=flat-square)](LICENSE) [![Build Status](https://circleci.com/gh/deliveroo/os_query.svg?branch=main)](https://app.circleci.com/pipelines/github/deliveroo/os_query?branch=main)
+[![](https://img.shields.io/github/license/aquasecurity/esquery?style=flat-square)](LICENSE) [![Build Status](https://circleci.com/gh/deliveroo/os-query.svg?branch=main)](https://app.circleci.com/pipelines/github/deliveroo/os-query?branch=main)
 
 
 **A non-obtrusive, idiomatic and easy-to-use query and aggregation builder for the [official Opensearch client](https://opensearch.org/docs/latest/clients/go/) for [Opensearch](https://opensearch.org/).**
@@ -48,7 +48,7 @@ import (
 
 	"github.com/opensearch-project/opensearch-go/v2"
 
-	oq "github.com/deliveroo/os_query"
+	oq "github.com/deliveroo/os-query"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-package os_query
+package query
 
 type FilterAggregation struct {
 	name   string
