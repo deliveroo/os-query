@@ -416,7 +416,7 @@ type TopHitsAgg struct {
 	name   string
 	from   uint64
 	size   uint64
-	sort   []map[string]interface{}
+	sorts  Sorts
 	source Source
 }
 
@@ -445,15 +445,10 @@ func (agg *TopHitsAgg) Size(size uint64) *TopHitsAgg {
 	return agg
 }
 
-// Sort sets how the top matching hits should be sorted. By default the hits are
+// Sorts sets how the top matching hits should be sorted. By default the hits are
 // sorted by the score of the main query.
-func (agg *TopHitsAgg) Sort(name string, order Order) *TopHitsAgg {
-	agg.sort = append(agg.sort, map[string]interface{}{
-		name: map[string]interface{}{
-			"order": order,
-		},
-	})
-
+func (agg *TopHitsAgg) Sorts(sorts ...map[string]Sort) *TopHitsAgg {
+	agg.sorts = sorts
 	return agg
 }
 
@@ -474,8 +469,8 @@ func (agg *TopHitsAgg) Map() map[string]interface{} {
 	if agg.size > 0 {
 		innerMap["size"] = agg.size
 	}
-	if len(agg.sort) > 0 {
-		innerMap["sort"] = agg.sort
+	if len(agg.sorts) > 0 {
+		innerMap["sort"] = agg.sorts
 	}
 	if len(agg.source.includes) > 0 {
 		innerMap["_source"] = agg.source.Map()

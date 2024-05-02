@@ -57,7 +57,7 @@ func (agg *TermsAggregation) Aggs(aggs ...Aggregation) *TermsAggregation {
 	return agg
 }
 
-// Order sets the sort for terms agg
+// Order sets the sorts for terms agg
 func (agg *TermsAggregation) Order(order map[string]string) *TermsAggregation {
 	agg.order = order
 	return agg

@@ -154,5 +154,38 @@ func TestMetricAggs(t *testing.T) {
 				},
 			},
 		},
+		{
+			"top_hits agg",
+			TopHits("top_hits").Sorts(
+				Sorts{
+					{
+						"field_1": {
+							Order: OrderDesc,
+						},
+					},
+					{
+						"field_2": {
+							Order: OrderAsc,
+						},
+					},
+				}...,
+			),
+			map[string]interface{}{
+				"top_hits": map[string]interface{}{
+					"sort": []map[string]interface{}{
+						{
+							"field_1": map[string]interface{}{
+								"order": OrderDesc,
+							},
+						},
+						{
+							"field_2": map[string]interface{}{
+								"order": OrderAsc,
+							},
+						},
+					},
+				},
+			},
+		},
 	})
 }
