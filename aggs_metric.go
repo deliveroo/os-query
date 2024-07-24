@@ -452,6 +452,12 @@ func (agg *TopHitsAgg) Sorts(sorts ...map[string]Sort) *TopHitsAgg {
 	return agg
 }
 
+// SourceDisabled when set will prevent source fields returning
+func (agg *TopHitsAgg) SourceDisabled(b bool) *TopHitsAgg {
+	agg.source.disabled = b
+	return agg
+}
+
 // SourceIncludes sets the keys to return from the top matching documents.
 func (agg *TopHitsAgg) SourceIncludes(keys ...string) *TopHitsAgg {
 	agg.source.includes = keys
@@ -472,8 +478,14 @@ func (agg *TopHitsAgg) Map() map[string]interface{} {
 	if len(agg.sorts) > 0 {
 		innerMap["sort"] = agg.sorts
 	}
-	if len(agg.source.includes) > 0 {
-		innerMap["_source"] = agg.source.Map()
+
+	if agg.source.disabled {
+		innerMap["_source"] = false
+	} else {
+		source := agg.source.Map()
+		if len(source) > 0 {
+			innerMap["_source"] = source
+		}
 	}
 
 	return map[string]interface{}{

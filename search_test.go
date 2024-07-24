@@ -25,6 +25,14 @@ func TestSearchMaps(t *testing.T) {
 			},
 		},
 		{
+			"a simple query with no source",
+			Search().SearchAfter("_id", "name").SourceDisabled(true),
+			map[string]interface{}{
+				"search_after": []string{"_id", "name"},
+				"_source":      false,
+			},
+		},
+		{
 			"a complex query with an aggregation and various other options",
 			Search().
 				Query(
