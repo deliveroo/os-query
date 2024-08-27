@@ -26,7 +26,7 @@ type SearchRequest struct {
 	sorts       Sorts
 	source      Source
 	timeout     *time.Duration
-	collapse    *Collapse
+	collapse    *CollapseRequest
 }
 
 // Search creates a new SearchRequest object, to be filled via method chaining.
@@ -110,7 +110,7 @@ func (req *SearchRequest) Highlight(highlight Mappable) *SearchRequest {
 
 // Collapse sets the collapse param for the request.
 // See:https://www.elastic.co/guide/en/elasticsearch/reference/current/collapse-search-results.html
-func (req *SearchRequest) Collapse(collapse *Collapse) *SearchRequest {
+func (req *SearchRequest) Collapse(collapse *CollapseRequest) *SearchRequest {
 	req.collapse = collapse
 	return req
 }

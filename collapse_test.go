@@ -10,9 +10,7 @@ func TestCollapse_Map(t *testing.T) {
 		[]mapTest{
 			{
 				name: "collapse",
-				q: Collapse{
-					field: "collapse_field",
-				},
+				q:    Collapse("collapse_field"),
 				exp: map[string]interface{}{
 					"field": "collapse_field",
 				},
