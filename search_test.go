@@ -132,5 +132,18 @@ func TestSearchMaps(t *testing.T) {
 				},
 			},
 		},
+		{
+			"a simple match_all query with a size and collapse",
+			Search().Query(MatchAll()).Size(20).Collapse(&Collapse{field: "collapse_field"}),
+			map[string]interface{}{
+				"query": map[string]interface{}{
+					"match_all": map[string]interface{}{},
+				},
+				"collapse": map[string]interface{}{
+					"field": "collapse_field",
+				},
+				"size": 20,
+			},
+		},
 	})
 }

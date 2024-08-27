@@ -26,6 +26,7 @@ type SearchRequest struct {
 	sorts       Sorts
 	source      Source
 	timeout     *time.Duration
+	collapse    *Collapse
 }
 
 // Search creates a new SearchRequest object, to be filled via method chaining.
@@ -107,6 +108,13 @@ func (req *SearchRequest) Highlight(highlight Mappable) *SearchRequest {
 	return req
 }
 
+// Collapse sets the collapse param for the request.
+// See:https://www.elastic.co/guide/en/elasticsearch/reference/current/collapse-search-results.html
+func (req *SearchRequest) Collapse(collapse *Collapse) *SearchRequest {
+	req.collapse = collapse
+	return req
+}
+
 // Map implements the Mappable interface. It converts the request to into a
 // nested map[string]interface{}, as expected by the go-elasticsearch library.
 func (req *SearchRequest) Map() map[string]interface{} {
@@ -145,6 +153,9 @@ func (req *SearchRequest) Map() map[string]interface{} {
 	}
 	if req.searchAfter != nil {
 		m["search_after"] = req.searchAfter
+	}
+	if req.collapse != nil {
+		m["collapse"] = req.collapse.Map()
 	}
 
 	source := req.source.Map()
