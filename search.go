@@ -90,6 +90,12 @@ func (req *SearchRequest) Timeout(dur time.Duration) *SearchRequest {
 	return req
 }
 
+// SourceDisabled when set will prevent source fields returning
+func (req *SearchRequest) SourceDisabled() *SearchRequest {
+	req.source.disabled = true
+	return req
+}
+
 // SourceIncludes sets the keys to return from the matching documents.
 func (req *SearchRequest) SourceIncludes(keys ...string) *SearchRequest {
 	req.source.includes = keys
@@ -158,9 +164,13 @@ func (req *SearchRequest) Map() map[string]interface{} {
 		m["collapse"] = req.collapse.Map()
 	}
 
-	source := req.source.Map()
-	if len(source) > 0 {
-		m["_source"] = source
+	if req.source.disabled {
+		m["_source"] = false
+	} else {
+		source := req.source.Map()
+		if len(source) > 0 {
+			m["_source"] = source
+		}
 	}
 
 	return m

@@ -5,6 +5,7 @@ package query
 type Source struct {
 	includes []string
 	excludes []string
+	disabled bool
 }
 
 // Map returns a map representation of the Source object.

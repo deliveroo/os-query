@@ -187,5 +187,41 @@ func TestMetricAggs(t *testing.T) {
 				},
 			},
 		},
+		{
+			"top_hits agg with no source",
+			TopHits("top_hits").
+				Sorts(
+					Sorts{
+						{
+							"field_1": {
+								Order: OrderDesc,
+							},
+						},
+						{
+							"field_2": {
+								Order: OrderAsc,
+							},
+						},
+					}...,
+				).
+				SourceDisabled(),
+			map[string]interface{}{
+				"top_hits": map[string]interface{}{
+					"sort": []map[string]interface{}{
+						{
+							"field_1": map[string]interface{}{
+								"order": OrderDesc,
+							},
+						},
+						{
+							"field_2": map[string]interface{}{
+								"order": OrderAsc,
+							},
+						},
+					},
+					"_source": false,
+				},
+			},
+		},
 	})
 }
