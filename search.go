@@ -91,8 +91,8 @@ func (req *SearchRequest) Timeout(dur time.Duration) *SearchRequest {
 }
 
 // SourceDisabled when set will prevent source fields returning
-func (req *SearchRequest) SourceDisabled(b bool) *SearchRequest {
-	req.source.disabled = b
+func (req *SearchRequest) SourceDisabled() *SearchRequest {
+	req.source.disabled = true
 	return req
 }
 

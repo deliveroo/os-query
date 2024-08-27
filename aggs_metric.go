@@ -453,8 +453,8 @@ func (agg *TopHitsAgg) Sorts(sorts ...map[string]Sort) *TopHitsAgg {
 }
 
 // SourceDisabled when set will prevent source fields returning
-func (agg *TopHitsAgg) SourceDisabled(b bool) *TopHitsAgg {
-	agg.source.disabled = b
+func (agg *TopHitsAgg) SourceDisabled() *TopHitsAgg {
+	agg.source.disabled = true
 	return agg
 }
 

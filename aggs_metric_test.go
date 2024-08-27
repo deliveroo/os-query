@@ -204,7 +204,7 @@ func TestMetricAggs(t *testing.T) {
 						},
 					}...,
 				).
-				SourceDisabled(true),
+				SourceDisabled(),
 			map[string]interface{}{
 				"top_hits": map[string]interface{}{
 					"sort": []map[string]interface{}{

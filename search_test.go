@@ -26,7 +26,7 @@ func TestSearchMaps(t *testing.T) {
 		},
 		{
 			"a simple query with no source",
-			Search().SearchAfter("_id", "name").SourceDisabled(true),
+			Search().SearchAfter("_id", "name").SourceDisabled(),
 			map[string]interface{}{
 				"search_after": []string{"_id", "name"},
 				"_source":      false,
