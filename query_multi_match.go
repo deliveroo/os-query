@@ -34,14 +34,15 @@ type multiMatchParams struct {
 	MinMatch     string         `structs:"minimum_should_match,omitempty"`
 	ZeroTerms    ZeroTerms      `structs:"zero_terms_query,string,omitempty"`
 	Slp          uint16         `structs:"slop,omitempty"`
+	Name         string         `structs:"_name,omitempty"`
 }
 
 // MultiMatch creates a new query of type "multi_match"
-func MultiMatch(simpleQuery ...interface{}) *MultiMatchQuery {
-	return newMultiMatch(simpleQuery...)
+func MultiMatch(fieldNames []string, simpleQuery ...interface{}) *MultiMatchQuery {
+	return newMultiMatch(fieldNames, simpleQuery...)
 }
 
-func newMultiMatch(simpleQuery ...interface{}) *MultiMatchQuery {
+func newMultiMatch(fieldNames []string, simpleQuery ...interface{}) *MultiMatchQuery {
 	var qry interface{}
 	if len(simpleQuery) > 0 {
 		qry = simpleQuery[len(simpleQuery)-1]
@@ -49,7 +50,8 @@ func newMultiMatch(simpleQuery ...interface{}) *MultiMatchQuery {
 
 	return &MultiMatchQuery{
 		params: multiMatchParams{
-			Qry: qry,
+			Fields: fieldNames,
+			Qry:    qry,
 		},
 	}
 }
@@ -65,12 +67,6 @@ func (q *MultiMatchQuery) Query(data interface{}) *MultiMatchQuery {
 // tokens.
 func (q *MultiMatchQuery) Analyzer(a string) *MultiMatchQuery {
 	q.params.Anl = a
-	return q
-}
-
-// Fields sets the fields used in the query
-func (q *MultiMatchQuery) Fields(a ...string) *MultiMatchQuery {
-	q.params.Fields = append(q.params.Fields, a...)
 	return q
 }
 
@@ -161,6 +157,11 @@ func (q *MultiMatchQuery) Slop(n uint16) *MultiMatchQuery {
 // when using a stop filter.
 func (q *MultiMatchQuery) ZeroTermsQuery(s ZeroTerms) *MultiMatchQuery {
 	q.params.ZeroTerms = s
+	return q
+}
+
+func (q *MultiMatchQuery) Name(name string) Mappable {
+	q.params.Name = name
 	return q
 }
 

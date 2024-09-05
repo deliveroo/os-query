@@ -8,7 +8,7 @@ func TestMultiMatch(t *testing.T) {
 	runMapTests(t, []mapTest{
 		{
 			"simple multi_match",
-			MultiMatch("value1", "value2").Fields("title"),
+			MultiMatch([]string{"title"}, "value1", "value2"),
 			map[string]interface{}{
 				"multi_match": map[string]interface{}{
 					"fields": []string{"title"},
@@ -18,10 +18,9 @@ func TestMultiMatch(t *testing.T) {
 		},
 		{
 			"multi_match all params",
-			MultiMatch("original").
+			MultiMatch([]string{"title", "body"}, "original").
 				Query("test").
 				Analyzer("stop").
-				Fields("title", "body").
 				AutoGenerateSynonymsPhraseQuery(true).
 				Fuzziness("AUTO").
 				MaxExpansions(16).
@@ -35,7 +34,8 @@ func TestMultiMatch(t *testing.T) {
 				Type(MatchTypePhrase).
 				MinimumShouldMatch("3<90%").
 				Slop(2).
-				ZeroTermsQuery(ZeroTermsAll),
+				ZeroTermsQuery(ZeroTermsAll).
+				Name("query_name"),
 			map[string]interface{}{
 				"multi_match": map[string]interface{}{
 					"analyzer":                            "stop",
@@ -55,6 +55,7 @@ func TestMultiMatch(t *testing.T) {
 					"slop":                                2,
 					"query":                               "test",
 					"fields":                              []string{"title", "body"},
+					"_name":                               "query_name",
 				},
 			},
 		},
