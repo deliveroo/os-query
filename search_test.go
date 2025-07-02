@@ -77,7 +77,8 @@ func TestSearchMaps(t *testing.T) {
 				).
 				SourceIncludes("field_1", "field_2").
 				SourceExcludes("field_3").
-				Timeout(time.Duration(20000000000)),
+				Timeout(time.Duration(20000000000)).
+				TrackTotalHits(false),
 			map[string]interface{}{
 				"query": map[string]interface{}{
 					"bool": map[string]interface{}{
@@ -138,6 +139,7 @@ func TestSearchMaps(t *testing.T) {
 					"includes": []string{"field_1", "field_2"},
 					"excludes": []string{"field_3"},
 				},
+				"track_total_hits": false,
 			},
 		},
 		{
