@@ -15,18 +15,19 @@ import (
 // Not all features of the search API are currently supported, but a request can
 // currently include a query, aggregations, and more.
 type SearchRequest struct {
-	aggs        []Aggregation
-	explain     *bool
-	from        *uint64
-	highlight   Mappable
-	searchAfter []interface{}
-	postFilter  Mappable
-	query       Mappable
-	size        *uint64
-	sorts       Sorts
-	source      Source
-	timeout     *time.Duration
-	collapse    *CollapseRequest
+	aggs           []Aggregation
+	explain        *bool
+	from           *uint64
+	highlight      Mappable
+	searchAfter    []interface{}
+	postFilter     Mappable
+	query          Mappable
+	size           *uint64
+	sorts          Sorts
+	source         Source
+	timeout        *time.Duration
+	collapse       *CollapseRequest
+	trackTotalHits any
 }
 
 // Search creates a new SearchRequest object, to be filled via method chaining.
@@ -81,6 +82,12 @@ func (req *SearchRequest) SearchAfter(s ...interface{}) *SearchRequest {
 // how each hit's score was calculated.
 func (req *SearchRequest) Explain(b bool) *SearchRequest {
 	req.explain = &b
+	return req
+}
+
+// TrackTotalHits sets whether the search should count the total number of hits past the limit. Supported values is a number [range] or a bool
+func (req *SearchRequest) TrackTotalHits(b any) *SearchRequest {
+	req.trackTotalHits = b
 	return req
 }
 
@@ -162,6 +169,9 @@ func (req *SearchRequest) Map() map[string]interface{} {
 	}
 	if req.collapse != nil {
 		m["collapse"] = req.collapse.Map()
+	}
+	if req.trackTotalHits != nil {
+		m["track_total_hits"] = req.trackTotalHits
 	}
 
 	if req.source.disabled {
